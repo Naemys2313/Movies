@@ -1,4 +1,6 @@
 <resources>
     <string name="app_name">Movies</string>
     <string name="description_button">Описание</string>
+    <string name="title_movie_text_view_mask">Название фильма</string>
+    <string name="description_movie_text_view_mask">Описание фильма</string>
 </resources>
