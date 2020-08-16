@@ -5,6 +5,8 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
 
+import ru.naemys.movies.fragments.MoviesFragment;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -13,6 +15,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
-
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainer, new MoviesFragment(), MoviesFragment.TAG)
+                .commit();
     }
 }
