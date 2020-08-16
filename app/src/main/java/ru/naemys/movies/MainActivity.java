@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ShareCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,11 +13,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.material.navigation.NavigationView;
+
 import ru.naemys.movies.fragments.DescriptionMovieFragment;
 import ru.naemys.movies.fragments.MoviesFragment;
 import ru.naemys.movies.models.Movie;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +46,10 @@ public class MainActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer, moviesFragment, MoviesFragment.TAG)
                 .commit();
+
+
+        ((NavigationView) findViewById(R.id.navigationView))
+                .setNavigationItemSelectedListener(this);
     }
 
     @Override
@@ -64,5 +73,20 @@ public class MainActivity extends AppCompatActivity {
                 .setType("text/plain")
                 .setText(getString(R.string.invite_friend_text))
                 .startChooser();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.mainScreenItemMenu:
+                getSupportFragmentManager().popBackStack();
+                break;
+            case R.id.aboutAppItemMenu:
+                Toast.makeText(this, "О приложении", Toast.LENGTH_SHORT).show();
+                break;
+        }
+
+        ((DrawerLayout) findViewById(R.id.drawerLayout)).closeDrawer(GravityCompat.START);
+        return true;
     }
 }
