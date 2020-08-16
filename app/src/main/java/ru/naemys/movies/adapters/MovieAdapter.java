@@ -15,6 +15,16 @@ import ru.naemys.movies.models.Movie;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     private List<Movie> movies = new ArrayList<>();
+    private OnDescriptionButtonClickListener onDescriptionButtonClickListener;
+
+    public interface OnDescriptionButtonClickListener {
+        void onDescriptionButtonClick(int position);
+    }
+
+    public void setOnDescriptionButtonClickListener(
+            OnDescriptionButtonClickListener onDescriptionButtonClickListener) {
+        this.onDescriptionButtonClickListener = onDescriptionButtonClickListener;
+    }
 
     public void addMovies(List<Movie> movies) {
         this.movies.addAll(movies);
@@ -36,6 +46,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
         holder.bind(movies.get(position));
+        holder.setOnDescriptionButtonClickListener(onDescriptionButtonClickListener);
     }
 
     @Override

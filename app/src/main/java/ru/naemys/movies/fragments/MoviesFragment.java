@@ -26,6 +26,16 @@ public class MoviesFragment extends Fragment {
 
     private List<Movie> mMovies = new ArrayList<>();
     private RecyclerView mMovieRecyclerView;
+    private OnDescriptionButtonClickListener mOnDescriptionButtonClickListener;
+
+    public interface OnDescriptionButtonClickListener {
+        void onDescriptionButtonClick(Movie movie);
+    }
+
+    public void setOnDescriptionButtonCLickListener(
+            OnDescriptionButtonClickListener clickListener) {
+        this.mOnDescriptionButtonClickListener = clickListener;
+    }
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -46,6 +56,15 @@ public class MoviesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mMovieRecyclerView = view.findViewById(R.id.moviesRecyclerView);
         attachMovieAdapter();
+
+        ((MovieAdapter) mMovieRecyclerView.getAdapter()).setOnDescriptionButtonClickListener(
+                new MovieAdapter.OnDescriptionButtonClickListener() {
+                    @Override
+                    public void onDescriptionButtonClick(int position) {
+                        mOnDescriptionButtonClickListener.onDescriptionButtonClick(
+                                mMovies.get(position));
+                    }
+                });
     }
 
     private void attachMovieAdapter() {

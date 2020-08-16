@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ru.naemys.movies.R;
+import ru.naemys.movies.adapters.MovieAdapter;
 import ru.naemys.movies.models.Movie;
 
 public class MovieViewHolder extends RecyclerView.ViewHolder {
@@ -27,5 +28,15 @@ public class MovieViewHolder extends RecyclerView.ViewHolder {
     public void bind(@NonNull Movie movie) {
         posterMovieImageView.setImageResource(movie.getPosterResource());
         titleMovieTextView.setText(movie.getTitle());
+    }
+
+    public void setOnDescriptionButtonClickListener(
+            final MovieAdapter.OnDescriptionButtonClickListener clickListener) {
+        descriptionMovieButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clickListener.onDescriptionButtonClick(getAdapterPosition());
+            }
+        });
     }
 }

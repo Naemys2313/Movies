@@ -1,11 +1,13 @@
 package ru.naemys.movies;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import android.os.Bundle;
+import android.widget.Toolbar;
 
+import ru.naemys.movies.fragments.DescriptionMovieFragment;
 import ru.naemys.movies.fragments.MoviesFragment;
+import ru.naemys.movies.models.Movie;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -13,10 +15,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        setActionBar((Toolbar) findViewById(R.id.toolbar));
+
+        MoviesFragment moviesFragment = new MoviesFragment();
+        moviesFragment.setOnDescriptionButtonCLickListener(
+                new MoviesFragment.OnDescriptionButtonClickListener() {
+                    @Override
+                    public void onDescriptionButtonClick(Movie movie) {
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragmentContainer,
+                                        DescriptionMovieFragment.newInstance(movie),
+                                        DescriptionMovieFragment.TAG)
+                                .addToBackStack(null)
+                                .commit();
+                    }
+                });
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainer, new MoviesFragment(), MoviesFragment.TAG)
+                .replace(R.id.fragmentContainer, moviesFragment, MoviesFragment.TAG)
                 .commit();
     }
 }
