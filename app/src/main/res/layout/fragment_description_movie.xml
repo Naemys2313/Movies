@@ -32,6 +32,31 @@
             app:layout_constraintTop_toBottomOf="@id/posterMovieImageView"
             tools:text="@string/description_movie_text_view_mask" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="2dp"
+            android:background="@android:color/black"
+            app:layout_constraintBottom_toTopOf="@id/reviewMovieEditText" />
+
+        <EditText
+            android:id="@+id/reviewMovieEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="@string/review_movie_edit_text"
+            app:layout_constraintTop_toBottomOf="@id/descriptionMovieTextView"
+            tools:ignore="Autofill,TextFields" />
+
+        <CheckBox
+            android:id="@+id/likeMovieCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/like_movie_check_box"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/reviewMovieEditText" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

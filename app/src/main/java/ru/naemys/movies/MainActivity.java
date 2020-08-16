@@ -65,5 +65,4 @@ public class MainActivity extends AppCompatActivity {
                 .setText(getString(R.string.invite_friend_text))
                 .startChooser();
     }
-
 }

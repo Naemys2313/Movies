@@ -6,4 +6,6 @@
     <string name="invite_friend_item_menu">Пригласить друга</string>
     <string name="invite_friend_chooser_title">Выберите приложение</string>
     <string name="invite_friend_text">Приглашаю тебя в приложение Movies</string>
+    <string name="review_movie_edit_text">Отзыв на фильм</string>
+    <string name="like_movie_check_box">Вам понравился фильм?</string>
 </resources>

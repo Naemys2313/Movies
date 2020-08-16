@@ -5,12 +5,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -26,11 +27,12 @@ public class DescriptionMovieFragment extends Fragment {
     public static final String EXTRA_MOVIE_DESCRIPTION = "EXTRA_MOVIE_DESCRIPTION";
     public static final String EXTRA_MOVIE_POSTER_RESOURCE = "EXTRA_MOVIE_POSTER_RESOURCE";
 
+    private EditText mReviewMovieEditText;
+    private CheckBox mLikeMovieCheckBox;
+
     @NotNull
     public static DescriptionMovieFragment newInstance(@NotNull Movie movie) {
         Bundle args = new Bundle();
-
-        Log.d(TAG, "newInstance: movie.title " + movie.getTitle());
 
         args.putString(EXTRA_MOVIE_TITLE, movie.getTitle());
         args.putString(EXTRA_MOVIE_DESCRIPTION, movie.getDescription());
@@ -63,6 +65,9 @@ public class DescriptionMovieFragment extends Fragment {
                     .setImageResource(getArguments().getInt(EXTRA_MOVIE_POSTER_RESOURCE,
                             R.drawable.ic_baseline_movie_24));
         }
+
+        mReviewMovieEditText = view.findViewById(R.id.reviewMovieEditText);
+        mLikeMovieCheckBox = view.findViewById(R.id.likeMovieCheckBox);
     }
 
     @Override
@@ -70,5 +75,9 @@ public class DescriptionMovieFragment extends Fragment {
         super.onDestroyView();
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.app_name);
+        String review = mReviewMovieEditText.getText().toString().trim();
+        boolean likeMovie = mLikeMovieCheckBox.isChecked();
+
+        Log.d(TAG, "Like movie: " + likeMovie + ", review: " + review);
     }
 }
