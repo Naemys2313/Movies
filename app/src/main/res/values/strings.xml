@@ -3,4 +3,7 @@
     <string name="description_button">Описание</string>
     <string name="title_movie_text_view_mask">Название фильма</string>
     <string name="description_movie_text_view_mask">Описание фильма</string>
+    <string name="invite_friend_item_menu">Пригласить друга</string>
+    <string name="invite_friend_chooser_title">Выберите приложение</string>
+    <string name="invite_friend_text">Приглашаю тебя в приложение Movies</string>
 </resources>

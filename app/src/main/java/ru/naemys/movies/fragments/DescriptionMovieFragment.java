@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +52,7 @@ public class DescriptionMovieFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         if (getArguments() != null) {
-            getActivity().getActionBar()
+            ((AppCompatActivity) getActivity()).getSupportActionBar()
                     .setTitle(getArguments().getString(EXTRA_MOVIE_TITLE,
                             getString(R.string.title_movie_text_view_mask)));
 
@@ -67,6 +69,6 @@ public class DescriptionMovieFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
 
-        getActivity().getActionBar().setTitle(R.string.app_name);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.app_name);
     }
 }
