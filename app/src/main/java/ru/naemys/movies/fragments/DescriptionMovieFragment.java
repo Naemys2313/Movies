@@ -23,23 +23,16 @@ import ru.naemys.movies.models.Movie;
 public class DescriptionMovieFragment extends Fragment {
     public static final String TAG = DescriptionMovieFragment.class.getSimpleName();
 
-    public static final String EXTRA_MOVIE_TITLE = "EXTRA_MOVIE_TITLE";
-    public static final String EXTRA_MOVIE_DESCRIPTION = "EXTRA_MOVIE_DESCRIPTION";
-    public static final String EXTRA_MOVIE_POSTER_RESOURCE = "EXTRA_MOVIE_POSTER_RESOURCE";
-
     private EditText mReviewMovieEditText;
     private CheckBox mLikeMovieCheckBox;
 
+    private Movie mMovie;
+
     @NotNull
     public static DescriptionMovieFragment newInstance(@NotNull Movie movie) {
-        Bundle args = new Bundle();
-
-        args.putString(EXTRA_MOVIE_TITLE, movie.getTitle());
-        args.putString(EXTRA_MOVIE_DESCRIPTION, movie.getDescription());
-        args.putInt(EXTRA_MOVIE_POSTER_RESOURCE, movie.getPosterResource());
-
         DescriptionMovieFragment fragment = new DescriptionMovieFragment();
-        fragment.setArguments(args);
+        fragment.setMovie(movie);
+
         return fragment;
     }
 
@@ -53,17 +46,13 @@ public class DescriptionMovieFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        if (getArguments() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar()
-                    .setTitle(getArguments().getString(EXTRA_MOVIE_TITLE,
-                            getString(R.string.title_movie_text_view_mask)));
+        if (mMovie != null) {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mMovie.getTitle());
 
             ((TextView) view.findViewById(R.id.descriptionMovieTextView))
-                    .setText(getArguments().getString(EXTRA_MOVIE_DESCRIPTION,
-                            getString(R.string.description_movie_text_view_mask)));
+                    .setText(mMovie.getDescription());
             ((ImageView) view.findViewById(R.id.posterMovieImageView))
-                    .setImageResource(getArguments().getInt(EXTRA_MOVIE_POSTER_RESOURCE,
-                            R.drawable.ic_baseline_movie_24));
+                    .setImageResource(mMovie.getPosterResource());
         }
 
         mReviewMovieEditText = view.findViewById(R.id.reviewMovieEditText);
@@ -79,5 +68,9 @@ public class DescriptionMovieFragment extends Fragment {
         boolean likeMovie = mLikeMovieCheckBox.isChecked();
 
         Log.d(TAG, "Like movie: " + likeMovie + ", review: " + review);
+    }
+
+    private void setMovie(Movie movie) {
+        mMovie = movie;
     }
 }

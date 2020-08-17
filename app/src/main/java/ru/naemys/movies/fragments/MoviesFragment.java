@@ -76,4 +76,8 @@ public class MoviesFragment extends Fragment {
         mMovieRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL));
     }
+
+    public void setContentChange() {
+        mMovieRecyclerView.getAdapter().notifyDataSetChanged();
+    }
 }
