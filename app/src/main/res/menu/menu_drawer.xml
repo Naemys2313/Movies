@@ -5,6 +5,10 @@
         android:title="@string/main_screen_item_menu" />
 
     <item
+        android:id="@+id/favoriteMovieScreenItemMenu"
+        android:title="@string/favorite_movie_screen_item_menu" />
+
+    <item
         android:id="@+id/aboutAppItemMenu"
         android:title="@string/about_app_item_menu" />
 

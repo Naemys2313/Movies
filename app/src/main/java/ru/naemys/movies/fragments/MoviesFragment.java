@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,8 +34,9 @@ import ru.naemys.movies.models.Movie;
 public class MoviesFragment extends Fragment {
     public static final String TAG = MoviesFragment.class.getSimpleName();
 
+    public static final String EXTRA_SHOW_FAVORITE = "EXTRA_SHOW_FAVORITE";
+
     private List<Movie> mMovies = new ArrayList<>();
-    private List<Movie> mFavoriteMovies = new ArrayList<>();
 
     private RecyclerView mMovieRecyclerView;
 
@@ -46,16 +48,19 @@ public class MoviesFragment extends Fragment {
         void onDescriptionButtonClick(Movie movie);
     }
 
-    public void setOnDescriptionButtonCLickListener(
-            OnDescriptionButtonClickListener clickListener) {
-        this.mOnDescriptionButtonClickListener = clickListener;
+    @NotNull
+    public static MoviesFragment newInstance(boolean showFavorite) {
+        Bundle args = new Bundle();
+        args.putBoolean(EXTRA_SHOW_FAVORITE, showFavorite);
+
+        MoviesFragment fragment = new MoviesFragment();
+        fragment.setArguments(args);
+        return fragment;
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-
-        mMovies.addAll(MoviesRepository.getMovies());
+    public void setOnDescriptionButtonClickListener(
+            OnDescriptionButtonClickListener clickListener) {
+        this.mOnDescriptionButtonClickListener = clickListener;
     }
 
     @Override
@@ -63,6 +68,15 @@ public class MoviesFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mSharedPreferences = getActivity().getSharedPreferences(
                 MainActivity.SHARED_PREFERENCES_MOVIES, Context.MODE_PRIVATE);
+
+        if (isShowFavorite())
+            mMovies.addAll(getFavoriteMoviesFromSharedPreferences());
+        else
+            mMovies.addAll(MoviesRepository.getMovies());
+
+        if (isShowFavorite())
+            ((AppCompatActivity) getActivity()).getSupportActionBar()
+                    .setTitle(R.string.favorite_movie_screen_item_menu);
 
         loadFavoriteMovies();
     }
@@ -97,11 +111,13 @@ public class MoviesFragment extends Fragment {
                     public void onFavoriteMovieClick(int position) {
                         Movie movie = mMovies.get(position);
                         if (!movie.isFavorite()) {
-                            mFavoriteMovies.add(movie);
                             saveFavoriteMovie(movie);
                         } else {
                             removeFavoriteMovie(movie);
-                            mFavoriteMovies.remove(movie);
+                            if (isShowFavorite()) {
+                                mMovies.remove(movie);
+                                movieAdapter.notifyItemRemoved(position);
+                            }
                         }
 
                         movie.setFavorite(!movie.isFavorite());
@@ -138,8 +154,6 @@ public class MoviesFragment extends Fragment {
 
         String moviesJson = gson.toJson(movies);
 
-        Log.d(TAG, "saveFavoriteMovie: moviesJsonEdit - " + moviesJson);
-
         mSharedPreferences.edit().putString(
                 MainActivity.SHARED_PREFERENCES_MOVIES_ARRAY, moviesJson).apply();
 
@@ -152,11 +166,9 @@ public class MoviesFragment extends Fragment {
 
         if (movies.size() > 1) {
             Movie movie1 = movies.get(1);
-            Log.d(TAG, "removeFavoriteMovie: movie1 - " + movie1.isFavorite() + "; movie - " + movie.isFavorite());
         }
 
         if (movies.contains(movie)) {
-            Log.d(TAG, "removeFavoriteMovie: contains here");
             movies.remove(movie);
         }
 
@@ -175,8 +187,6 @@ public class MoviesFragment extends Fragment {
         String moviesJson = mSharedPreferences.getString(
                 MainActivity.SHARED_PREFERENCES_MOVIES_ARRAY, null);
 
-        Log.d(TAG, "saveFavoriteMovie: moviesJson - " + moviesJson);
-
         if (moviesJson != null) {
             Movie[] moviesArray = gson.fromJson(moviesJson, Movie[].class);
             Collections.addAll(movies, moviesArray);
@@ -192,5 +202,11 @@ public class MoviesFragment extends Fragment {
     public void addMovie(Movie movie) {
         mMovies.add(movie);
         mMovieRecyclerView.getAdapter().notifyItemInserted(mMovies.size() - 1);
+    }
+
+    private boolean isShowFavorite() {
+        return getArguments() != null
+                && getArguments().containsKey(EXTRA_SHOW_FAVORITE)
+                && getArguments().getBoolean(EXTRA_SHOW_FAVORITE, false);
     }
 }

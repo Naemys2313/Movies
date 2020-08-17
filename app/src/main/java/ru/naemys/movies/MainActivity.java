@@ -22,7 +22,8 @@ import ru.naemys.movies.fragments.MoviesFragment;
 import ru.naemys.movies.models.Movie;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        MoviesFragment.OnDescriptionButtonClickListener {
     public static final String SHARED_PREFERENCES_MOVIES = "SHARED_PREFERENCES_MOVIES";
     public static final String SHARED_PREFERENCES_MOVIES_ARRAY = "SHARED_PREFERENCES_MOVIES_SET";
 
@@ -36,18 +37,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         mMoviesFragment = new MoviesFragment();
-        mMoviesFragment.setOnDescriptionButtonCLickListener(
-                new MoviesFragment.OnDescriptionButtonClickListener() {
-                    @Override
-                    public void onDescriptionButtonClick(Movie movie) {
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragmentContainer,
-                                        DescriptionMovieFragment.newInstance(movie),
-                                        DescriptionMovieFragment.TAG)
-                                .addToBackStack(null)
-                                .commit();
-                    }
-                });
+        mMoviesFragment.setOnDescriptionButtonClickListener(this);
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragmentContainer, mMoviesFragment, MoviesFragment.TAG)
@@ -110,6 +100,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.mainScreenItemMenu:
                 getSupportFragmentManager().popBackStack();
                 break;
+            case R.id.favoriteMovieScreenItemMenu:
+                goToFavoriteMoviesScreen();
+                break;
             case R.id.aboutAppItemMenu:
                 Toast.makeText(this, "О приложении", Toast.LENGTH_SHORT).show();
                 break;
@@ -138,5 +131,25 @@ public class MainActivity extends AppCompatActivity
         });
         builder.setTitle(R.string.exit_from_app_alert_dialog_title);
         builder.show();
+    }
+
+    private void goToFavoriteMoviesScreen() {
+        MoviesFragment fragment = MoviesFragment.newInstance(true);
+        fragment.setOnDescriptionButtonClickListener(this);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void onDescriptionButtonClick(Movie movie) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainer,
+                        DescriptionMovieFragment.newInstance(movie),
+                        DescriptionMovieFragment.TAG)
+                .addToBackStack(null)
+                .commit();
     }
 }

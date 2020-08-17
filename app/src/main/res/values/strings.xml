@@ -17,4 +17,5 @@
     <string name="no">Нет</string>
     <string name="yes">Да</string>
     <string name="exit_from_app_alert_dialog_title">Вы действительно хотите выйти?</string>
+    <string name="favorite_movie_screen_item_menu">Избранные фильмы</string>
 </resources>
