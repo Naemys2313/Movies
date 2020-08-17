@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/addMovieItemMenu"
+        android:icon="@drawable/ic_baseline_post_add_24"
+        android:title="@string/add_movie_item_menu"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/inviteFriendItemMenu"
         android:title="@string/invite_friend_item_menu" />
 </menu>

@@ -10,4 +10,7 @@
     <string name="like_movie_check_box">Вам понравился фильм?</string>
     <string name="about_app_item_menu">О приложении</string>
     <string name="main_screen_item_menu">Главный экран</string>
+    <string name="add_movie_item_menu">Добавить фильм</string>
+    <string name="title_movie_edit_text_hint">Название фильма</string>
+    <string name="description_movie_edit_text_hint">Описание фильма</string>
 </resources>

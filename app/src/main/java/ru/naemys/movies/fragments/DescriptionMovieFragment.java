@@ -3,6 +3,7 @@ package ru.naemys.movies.fragments;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -41,6 +42,8 @@ public class DescriptionMovieFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
+
         return inflater.inflate(R.layout.fragment_description_movie, container, false);
     }
 
@@ -57,6 +60,7 @@ public class DescriptionMovieFragment extends Fragment {
 
         mReviewMovieEditText = view.findViewById(R.id.reviewMovieEditText);
         mLikeMovieCheckBox = view.findViewById(R.id.likeMovieCheckBox);
+
     }
 
     @Override
@@ -68,6 +72,11 @@ public class DescriptionMovieFragment extends Fragment {
         boolean likeMovie = mLikeMovieCheckBox.isChecked();
 
         Log.d(TAG, "Like movie: " + likeMovie + ", review: " + review);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(@NonNull Menu menu) {
+        menu.findItem(R.id.addMovieItemMenu).setVisible(false);
     }
 
     private void setMovie(Movie movie) {

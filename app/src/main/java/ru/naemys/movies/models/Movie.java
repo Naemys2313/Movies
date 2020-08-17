@@ -37,4 +37,13 @@ public class Movie {
     public void setPosterResource(int posterResource) {
         this.posterResource = posterResource;
     }
+
+    @Override
+    public String toString() {
+        return "Movie{" +
+                "title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", posterResource=" + posterResource +
+                '}';
+    }
 }

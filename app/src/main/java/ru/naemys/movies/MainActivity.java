@@ -14,12 +14,15 @@ import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
+import ru.naemys.movies.fragments.AddMovieFragment;
 import ru.naemys.movies.fragments.DescriptionMovieFragment;
 import ru.naemys.movies.fragments.MoviesFragment;
 import ru.naemys.movies.models.Movie;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private MoviesFragment mMoviesFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,8 +31,8 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        MoviesFragment moviesFragment = new MoviesFragment();
-        moviesFragment.setOnDescriptionButtonCLickListener(
+        mMoviesFragment = new MoviesFragment();
+        mMoviesFragment.setOnDescriptionButtonCLickListener(
                 new MoviesFragment.OnDescriptionButtonClickListener() {
                     @Override
                     public void onDescriptionButtonClick(Movie movie) {
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity
                 });
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainer, moviesFragment, MoviesFragment.TAG)
+                .replace(R.id.fragmentContainer, mMoviesFragment, MoviesFragment.TAG)
                 .commit();
 
 
@@ -59,11 +62,18 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.inviteFriendItemMenu) {
-            inviteFriend();
-            return true;
+        switch (item.getItemId()) {
+            case R.id.inviteFriendItemMenu:
+                inviteFriend();
+                return true;
+
+            case R.id.addMovieItemMenu:
+                addMovie();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private void inviteFriend() {
@@ -72,6 +82,22 @@ public class MainActivity extends AppCompatActivity
                 .setType("text/plain")
                 .setText(getString(R.string.invite_friend_text))
                 .startChooser();
+    }
+
+    private void addMovie() {
+        AddMovieFragment addMovieFragment = new AddMovieFragment();
+        addMovieFragment.setOnAddMovieClickListener(new AddMovieFragment.OnAddMovieClickListener() {
+            @Override
+            public void onAddMovieClick(Movie movie) {
+                mMoviesFragment.addMovie(movie);
+                getSupportFragmentManager().popBackStack();
+            }
+        });
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragmentContainer, addMovieFragment, AddMovieFragment.TAG)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override

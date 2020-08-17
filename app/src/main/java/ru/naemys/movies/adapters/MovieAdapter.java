@@ -31,11 +31,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void addMovie(Movie movie) {
-        movies.add(movie);
-        notifyItemInserted(movies.size() - 1);
-    }
-
     @NonNull
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

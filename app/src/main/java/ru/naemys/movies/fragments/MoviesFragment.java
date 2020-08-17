@@ -80,4 +80,9 @@ public class MoviesFragment extends Fragment {
     public void setContentChange() {
         mMovieRecyclerView.getAdapter().notifyDataSetChanged();
     }
+
+    public void addMovie(Movie movie) {
+        mMovies.add(movie);
+        mMovieRecyclerView.getAdapter().notifyItemInserted(mMovies.size() - 1);
+    }
 }
