@@ -13,4 +13,8 @@
     <string name="add_movie_item_menu">Добавить фильм</string>
     <string name="title_movie_edit_text_hint">Название фильма</string>
     <string name="description_movie_edit_text_hint">Описание фильма</string>
+    <string name="exit_item_menu">Выйти из приложения</string>
+    <string name="no">Нет</string>
+    <string name="yes">Да</string>
+    <string name="exit_from_app_alert_dialog_title">Вы действительно хотите выйти?</string>
 </resources>

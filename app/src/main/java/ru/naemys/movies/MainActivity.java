@@ -7,6 +7,8 @@ import androidx.core.app.ShareCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -109,9 +111,30 @@ public class MainActivity extends AppCompatActivity
             case R.id.aboutAppItemMenu:
                 Toast.makeText(this, "О приложении", Toast.LENGTH_SHORT).show();
                 break;
+            case R.id.exitItemMenu:
+                exitFromApp();
+                break;
         }
 
         ((DrawerLayout) findViewById(R.id.drawerLayout)).closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void exitFromApp() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finishAffinity();
+            }
+        });
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setTitle(R.string.exit_from_app_alert_dialog_title);
+        builder.show();
     }
 }
