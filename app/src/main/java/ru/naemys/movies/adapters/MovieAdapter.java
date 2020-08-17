@@ -15,15 +15,25 @@ import ru.naemys.movies.models.Movie;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     private List<Movie> movies = new ArrayList<>();
+
     private OnDescriptionButtonClickListener onDescriptionButtonClickListener;
+    private OnFavoriteMovieClickListener onFavoriteMovieClickListener;
 
     public interface OnDescriptionButtonClickListener {
         void onDescriptionButtonClick(int position);
     }
 
+    public interface OnFavoriteMovieClickListener {
+        void onFavoriteMovieClick(int position);
+    }
+
     public void setOnDescriptionButtonClickListener(
             OnDescriptionButtonClickListener onDescriptionButtonClickListener) {
         this.onDescriptionButtonClickListener = onDescriptionButtonClickListener;
+    }
+
+    public void setOnFavoriteMovieClickListener(OnFavoriteMovieClickListener onFavoriteMovieClickListener) {
+        this.onFavoriteMovieClickListener = onFavoriteMovieClickListener;
     }
 
     public void addMovies(List<Movie> movies) {
@@ -42,6 +52,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
         holder.bind(movies.get(position));
         holder.setOnDescriptionButtonClickListener(onDescriptionButtonClickListener);
+        holder.setOnFavoriteMovieClickListener(onFavoriteMovieClickListener);
     }
 
     @Override

@@ -2,6 +2,7 @@ package ru.naemys.movies.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import ru.naemys.movies.MoviesRepository;
@@ -25,7 +27,10 @@ public class MoviesFragment extends Fragment {
     public static final String TAG = MoviesFragment.class.getSimpleName();
 
     private List<Movie> mMovies = new ArrayList<>();
+    private List<Movie> mFavoriteMovies = new ArrayList<>();
+
     private RecyclerView mMovieRecyclerView;
+
     private OnDescriptionButtonClickListener mOnDescriptionButtonClickListener;
 
     public interface OnDescriptionButtonClickListener {
@@ -57,12 +62,32 @@ public class MoviesFragment extends Fragment {
         mMovieRecyclerView = view.findViewById(R.id.moviesRecyclerView);
         attachMovieAdapter();
 
-        ((MovieAdapter) mMovieRecyclerView.getAdapter()).setOnDescriptionButtonClickListener(
+        final MovieAdapter movieAdapter = (MovieAdapter) mMovieRecyclerView.getAdapter();
+
+        movieAdapter.setOnDescriptionButtonClickListener(
                 new MovieAdapter.OnDescriptionButtonClickListener() {
                     @Override
                     public void onDescriptionButtonClick(int position) {
                         mOnDescriptionButtonClickListener.onDescriptionButtonClick(
                                 mMovies.get(position));
+                    }
+                });
+
+        movieAdapter.setOnFavoriteMovieClickListener(
+                new MovieAdapter.OnFavoriteMovieClickListener() {
+                    @Override
+                    public void onFavoriteMovieClick(int position) {
+                        Movie movie = mMovies.get(position);
+                        if (!movie.isFavorite()) {
+                            mFavoriteMovies.add(movie);
+                        } else {
+                            mFavoriteMovies.remove(movie);
+                        }
+
+                        Log.d(TAG, "mFavoriteMovies: " + Arrays.toString(mFavoriteMovies.toArray()));
+
+                        movie.setFavorite(!movie.isFavorite());
+                        movieAdapter.notifyItemChanged(position);
                     }
                 });
     }

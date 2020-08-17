@@ -16,6 +16,7 @@ public class MovieViewHolder extends RecyclerView.ViewHolder {
     private ImageView posterMovieImageView;
     private TextView titleMovieTextView;
     private Button descriptionMovieButton;
+    private ImageView favoriteMovieImageView;
 
     public MovieViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -23,11 +24,18 @@ public class MovieViewHolder extends RecyclerView.ViewHolder {
         posterMovieImageView = itemView.findViewById(R.id.posterMovieImageView);
         titleMovieTextView = itemView.findViewById(R.id.titleMovieTextView);
         descriptionMovieButton = itemView.findViewById(R.id.descriptionMovieButton);
+        favoriteMovieImageView = itemView.findViewById(R.id.favoriteMovieImageView);
     }
 
     public void bind(@NonNull Movie movie) {
         posterMovieImageView.setImageResource(movie.getPosterResource());
         titleMovieTextView.setText(movie.getTitle());
+
+        if (movie.isFavorite()) {
+            favoriteMovieImageView.setImageResource(R.drawable.ic_baseline_favorite_24_red);
+        } else {
+            favoriteMovieImageView.setImageResource(R.drawable.ic_baseline_favorite_24_gray);
+        }
     }
 
     public void setOnDescriptionButtonClickListener(
@@ -35,8 +43,22 @@ public class MovieViewHolder extends RecyclerView.ViewHolder {
         descriptionMovieButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clickListener.onDescriptionButtonClick(getAdapterPosition());
+                if (clickListener != null)
+                    clickListener.onDescriptionButtonClick(getAdapterPosition());
             }
         });
     }
+
+    public void setOnFavoriteMovieClickListener(
+            final MovieAdapter.OnFavoriteMovieClickListener clickListener) {
+        favoriteMovieImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (clickListener != null) {
+                    clickListener.onFavoriteMovieClick(getAdapterPosition());
+                }
+            }
+        });
+    }
+
 }

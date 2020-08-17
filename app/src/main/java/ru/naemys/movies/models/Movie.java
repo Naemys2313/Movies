@@ -1,9 +1,12 @@
 package ru.naemys.movies.models;
 
+import org.jetbrains.annotations.NotNull;
+
 public class Movie {
     private String title;
     private String description;
     private int posterResource;
+    private boolean favorite = false;
 
     public Movie() {
     }
@@ -12,6 +15,13 @@ public class Movie {
         this.title = title;
         this.description = description;
         this.posterResource = posterResource;
+    }
+
+    public Movie(String title, String description, int posterResource, boolean favorite) {
+        this.title = title;
+        this.description = description;
+        this.posterResource = posterResource;
+        this.favorite = favorite;
     }
 
     public String getTitle() {
@@ -38,7 +48,16 @@ public class Movie {
         this.posterResource = posterResource;
     }
 
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
     @Override
+    @NotNull
     public String toString() {
         return "Movie{" +
                 "title='" + title + '\'' +

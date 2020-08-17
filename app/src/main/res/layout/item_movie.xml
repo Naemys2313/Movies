@@ -31,6 +31,17 @@
         app:layout_constraintVertical_chainStyle="spread"
         tools:text="Название фильма" />
 
+    <ImageView
+        android:id="@+id/favoriteMovieImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:src="@drawable/ic_baseline_favorite_24_gray"
+        app:layout_constraintBottom_toBottomOf="@id/descriptionMovieButton"
+        app:layout_constraintStart_toEndOf="@id/descriptionMovieButton"
+        app:layout_constraintTop_toTopOf="@id/descriptionMovieButton"
+        tools:ignore="ContentDescription" />
+
     <Button
         android:id="@+id/descriptionMovieButton"
         android:layout_width="wrap_content"
