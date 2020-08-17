@@ -23,6 +23,8 @@ import ru.naemys.movies.models.Movie;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    public static final String SHARED_PREFERENCES_MOVIES = "SHARED_PREFERENCES_MOVIES";
+    public static final String SHARED_PREFERENCES_MOVIES_ARRAY = "SHARED_PREFERENCES_MOVIES_SET";
 
     private MoviesFragment mMoviesFragment;
 

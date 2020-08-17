@@ -1,6 +1,7 @@
 package ru.naemys.movies.fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,10 +15,16 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
+import ru.naemys.movies.MainActivity;
 import ru.naemys.movies.MoviesRepository;
 import ru.naemys.movies.R;
 import ru.naemys.movies.adapters.MovieAdapter;
@@ -33,6 +40,8 @@ public class MoviesFragment extends Fragment {
 
     private OnDescriptionButtonClickListener mOnDescriptionButtonClickListener;
 
+    private SharedPreferences mSharedPreferences;
+
     public interface OnDescriptionButtonClickListener {
         void onDescriptionButtonClick(Movie movie);
     }
@@ -47,6 +56,15 @@ public class MoviesFragment extends Fragment {
         super.onAttach(context);
 
         mMovies.addAll(MoviesRepository.getMovies());
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mSharedPreferences = getActivity().getSharedPreferences(
+                MainActivity.SHARED_PREFERENCES_MOVIES, Context.MODE_PRIVATE);
+
+        loadFavoriteMovies();
     }
 
     @Nullable
@@ -80,11 +98,11 @@ public class MoviesFragment extends Fragment {
                         Movie movie = mMovies.get(position);
                         if (!movie.isFavorite()) {
                             mFavoriteMovies.add(movie);
+                            saveFavoriteMovie(movie);
                         } else {
+                            removeFavoriteMovie(movie);
                             mFavoriteMovies.remove(movie);
                         }
-
-                        Log.d(TAG, "mFavoriteMovies: " + Arrays.toString(mFavoriteMovies.toArray()));
 
                         movie.setFavorite(!movie.isFavorite());
                         movieAdapter.notifyItemChanged(position);
@@ -100,6 +118,71 @@ public class MoviesFragment extends Fragment {
         mMovieRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mMovieRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL));
+    }
+
+    private void loadFavoriteMovies() {
+        ArrayList<Movie> movies = (ArrayList<Movie>) getFavoriteMoviesFromSharedPreferences();
+
+        for (Movie movie : mMovies) {
+            if (movies.contains(movie))
+                movie.setFavorite(true);
+        }
+    }
+
+    private void saveFavoriteMovie(Movie movie) {
+        Gson gson = new Gson();
+
+        List<Movie> movies = getFavoriteMoviesFromSharedPreferences();
+
+        movies.add(movie);
+
+        String moviesJson = gson.toJson(movies);
+
+        Log.d(TAG, "saveFavoriteMovie: moviesJsonEdit - " + moviesJson);
+
+        mSharedPreferences.edit().putString(
+                MainActivity.SHARED_PREFERENCES_MOVIES_ARRAY, moviesJson).apply();
+
+    }
+
+    private void removeFavoriteMovie(Movie movie) {
+        Gson gson = new Gson();
+
+        ArrayList<Movie> movies = (ArrayList<Movie>) getFavoriteMoviesFromSharedPreferences();
+
+        if (movies.size() > 1) {
+            Movie movie1 = movies.get(1);
+            Log.d(TAG, "removeFavoriteMovie: movie1 - " + movie1.isFavorite() + "; movie - " + movie.isFavorite());
+        }
+
+        if (movies.contains(movie)) {
+            Log.d(TAG, "removeFavoriteMovie: contains here");
+            movies.remove(movie);
+        }
+
+        String moviesJson = gson.toJson(movies);
+
+        mSharedPreferences.edit().putString(
+                MainActivity.SHARED_PREFERENCES_MOVIES_ARRAY, moviesJson).apply();
+    }
+
+    @NotNull
+    private List<Movie> getFavoriteMoviesFromSharedPreferences() {
+        Gson gson = new Gson();
+
+        List<Movie> movies = new ArrayList<>();
+
+        String moviesJson = mSharedPreferences.getString(
+                MainActivity.SHARED_PREFERENCES_MOVIES_ARRAY, null);
+
+        Log.d(TAG, "saveFavoriteMovie: moviesJson - " + moviesJson);
+
+        if (moviesJson != null) {
+            Movie[] moviesArray = gson.fromJson(moviesJson, Movie[].class);
+            Collections.addAll(movies, moviesArray);
+        }
+
+        return movies;
     }
 
     public void setContentChange() {

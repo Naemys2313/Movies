@@ -1,6 +1,10 @@
 package ru.naemys.movies.models;
 
+import androidx.annotation.Nullable;
+
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class Movie {
     private String title;
@@ -54,6 +58,18 @@ public class Movie {
 
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != Movie.class) return false;
+
+        Movie movie = (Movie) obj;
+
+        return movie.getPosterResource() == posterResource
+                && Objects.equals(movie.getTitle(), title)
+                && Objects.equals(movie.getDescription(), description);
     }
 
     @Override
