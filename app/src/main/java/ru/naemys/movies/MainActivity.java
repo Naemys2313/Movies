@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity
         mMoviesFragment.setOnDescriptionButtonClickListener(this);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainer, mMoviesFragment, MoviesFragment.TAG)
+                .replace(R.id.fragmentContainer, mMoviesFragment, MoviesFragment.TAG_MOVIES)
                 .commit();
 
 
@@ -137,8 +137,10 @@ public class MainActivity extends AppCompatActivity
         MoviesFragment fragment = MoviesFragment.newInstance(true);
         fragment.setOnDescriptionButtonClickListener(this);
 
+        getSupportFragmentManager().popBackStack();
+
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragmentContainer, fragment)
+                .replace(R.id.fragmentContainer, fragment, MoviesFragment.TAG_FAVORITE_MOVIES)
                 .addToBackStack(null)
                 .commit();
     }

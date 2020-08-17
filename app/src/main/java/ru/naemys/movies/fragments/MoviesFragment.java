@@ -32,7 +32,8 @@ import ru.naemys.movies.adapters.MovieAdapter;
 import ru.naemys.movies.models.Movie;
 
 public class MoviesFragment extends Fragment {
-    public static final String TAG = MoviesFragment.class.getSimpleName();
+    public static final String TAG_MOVIES = MoviesFragment.class.getSimpleName();
+    public static final String TAG_FAVORITE_MOVIES = MoviesFragment.class.getSimpleName() + "Favorite";
 
     public static final String EXTRA_SHOW_FAVORITE = "EXTRA_SHOW_FAVORITE";
 
@@ -78,7 +79,6 @@ public class MoviesFragment extends Fragment {
             ((AppCompatActivity) getActivity()).getSupportActionBar()
                     .setTitle(R.string.favorite_movie_screen_item_menu);
 
-        loadFavoriteMovies();
     }
 
     @Nullable
@@ -93,7 +93,8 @@ public class MoviesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mMovieRecyclerView = view.findViewById(R.id.moviesRecyclerView);
         attachMovieAdapter();
-
+        Log.d(MoviesFragment.class.getSimpleName(), "onViewCreated: here");
+        loadFavoriteMovies();
         final MovieAdapter movieAdapter = (MovieAdapter) mMovieRecyclerView.getAdapter();
 
         movieAdapter.setOnDescriptionButtonClickListener(
@@ -110,20 +111,25 @@ public class MoviesFragment extends Fragment {
                     @Override
                     public void onFavoriteMovieClick(int position) {
                         Movie movie = mMovies.get(position);
-                        if (!movie.isFavorite()) {
+                        movie.setFavorite(!movie.isFavorite());
+
+                        if (movie.isFavorite()) {
                             saveFavoriteMovie(movie);
                         } else {
                             removeFavoriteMovie(movie);
-                            if (isShowFavorite()) {
-                                mMovies.remove(movie);
-                                movieAdapter.notifyItemRemoved(position);
-                            }
                         }
 
-                        movie.setFavorite(!movie.isFavorite());
                         movieAdapter.notifyItemChanged(position);
                     }
                 });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        if (isShowFavorite())
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.app_name);
     }
 
     private void attachMovieAdapter() {
@@ -140,12 +146,18 @@ public class MoviesFragment extends Fragment {
         ArrayList<Movie> movies = (ArrayList<Movie>) getFavoriteMoviesFromSharedPreferences();
 
         for (Movie movie : mMovies) {
-            if (movies.contains(movie))
+            if (movies.contains(movie)) {
                 movie.setFavorite(true);
+                Log.d(TAG_MOVIES, "loadFavoriteMovies: here");
+            } else {
+                movie.setFavorite(false);
+            }
         }
+
+        mMovieRecyclerView.getAdapter().notifyDataSetChanged();
     }
 
-    private void saveFavoriteMovie(Movie movie) {
+    public void saveFavoriteMovie(Movie movie) {
         Gson gson = new Gson();
 
         List<Movie> movies = getFavoriteMoviesFromSharedPreferences();
@@ -159,14 +171,10 @@ public class MoviesFragment extends Fragment {
 
     }
 
-    private void removeFavoriteMovie(Movie movie) {
+    public void removeFavoriteMovie(Movie movie) {
         Gson gson = new Gson();
 
         ArrayList<Movie> movies = (ArrayList<Movie>) getFavoriteMoviesFromSharedPreferences();
-
-        if (movies.size() > 1) {
-            Movie movie1 = movies.get(1);
-        }
 
         if (movies.contains(movie)) {
             movies.remove(movie);

@@ -29,6 +29,8 @@ public class DescriptionMovieFragment extends Fragment {
 
     private Movie mMovie;
 
+    private String lastTitleActionBar;
+
     @NotNull
     public static DescriptionMovieFragment newInstance(@NotNull Movie movie) {
         DescriptionMovieFragment fragment = new DescriptionMovieFragment();
@@ -50,6 +52,9 @@ public class DescriptionMovieFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         if (mMovie != null) {
+            lastTitleActionBar = ((AppCompatActivity) getActivity()).getSupportActionBar()
+                    .getTitle().toString();
+
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mMovie.getTitle());
 
             ((TextView) view.findViewById(R.id.descriptionMovieTextView))
@@ -61,15 +66,32 @@ public class DescriptionMovieFragment extends Fragment {
         mReviewMovieEditText = view.findViewById(R.id.reviewMovieEditText);
         mLikeMovieCheckBox = view.findViewById(R.id.likeMovieCheckBox);
 
+        mLikeMovieCheckBox.setChecked(mMovie.isFavorite());
+
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
 
-        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.app_name);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(lastTitleActionBar);
         String review = mReviewMovieEditText.getText().toString().trim();
         boolean likeMovie = mLikeMovieCheckBox.isChecked();
+
+        MoviesFragment fragment = ((MoviesFragment) getActivity().getSupportFragmentManager()
+                .findFragmentByTag(MoviesFragment.TAG_MOVIES));
+
+        if (likeMovie != mMovie.isFavorite()) {
+            if (likeMovie) {
+                fragment.saveFavoriteMovie(mMovie);
+            } else {
+                fragment.removeFavoriteMovie(mMovie);
+            }
+        }
+
+        mMovie.setFavorite(likeMovie);
+
+        fragment.setContentChange();
 
         Log.d(TAG, "Like movie: " + likeMovie + ", review: " + review);
     }
