@@ -102,6 +102,20 @@ public class MoviesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mMovieRecyclerView = view.findViewById(R.id.moviesRecyclerView);
         attachMovieAdapter();
+
+        mMovieRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                LinearLayoutManager layoutManager =
+                        (LinearLayoutManager) recyclerView.getLayoutManager();
+                if (layoutManager == null) return;
+
+                if (layoutManager.findLastCompletelyVisibleItemPosition() == mMovies.size()) {
+                    mPage++;
+                    loadMovies();
+                }
+            }
+        });
     }
 
     @Override
@@ -249,6 +263,4 @@ public class MoviesFragment extends Fragment {
             }
         });
     }
-
-
 }
