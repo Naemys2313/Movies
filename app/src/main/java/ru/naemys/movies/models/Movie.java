@@ -76,7 +76,8 @@ public class Movie {
 
         Movie movie = (Movie) obj;
 
-        return Objects.equals(movie.getPosterUrl(), posterUrl)
+        return Objects.equals(movie.getId(), id)
+                && Objects.equals(movie.getPosterUrl(), posterUrl)
                 && Objects.equals(movie.getTitle(), title)
                 && Objects.equals(movie.getDescription(), description);
     }

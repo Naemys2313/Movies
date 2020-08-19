@@ -46,8 +46,6 @@ public class MoviesFragment extends Fragment {
     private RecyclerView mMovieRecyclerView;
     private MovieAdapter mMovieAdapter;
 
-    private FrameLayout mMovieLoader;
-
     private OnDescriptionButtonClickListener mOnDescriptionButtonClickListener;
 
     private SharedPreferences mSharedPreferences;
@@ -104,9 +102,6 @@ public class MoviesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mMovieRecyclerView = view.findViewById(R.id.moviesRecyclerView);
         attachMovieAdapter();
-
-        Log.d(MoviesFragment.class.getSimpleName(), "onViewCreated: here");
-        loadFavoriteMovies();
     }
 
     @Override
@@ -154,19 +149,18 @@ public class MoviesFragment extends Fragment {
                 DividerItemDecoration.VERTICAL));
     }
 
-    private void loadFavoriteMovies() {
+    private void setFavoriteMovies() {
         ArrayList<Movie> movies = (ArrayList<Movie>) getFavoriteMoviesFromSharedPreferences();
 
         for (Movie movie : mMovies) {
             if (movies.contains(movie)) {
                 movie.setFavorite(true);
-                Log.d(TAG_MOVIES, "loadFavoriteMovies: here");
             } else {
                 movie.setFavorite(false);
             }
         }
 
-        mMovieRecyclerView.getAdapter().notifyDataSetChanged();
+        mMovieAdapter.notifyDataSetChanged();
     }
 
     public void saveFavoriteMovie(Movie movie) {
@@ -242,6 +236,7 @@ public class MoviesFragment extends Fragment {
                     }
                     mMovieAdapter.notifyDataSetChanged();
 
+                    setFavoriteMovies();
                 } else {
                     Log.d(TAG_MOVIES, "response.code: " + response.code());
                 }
