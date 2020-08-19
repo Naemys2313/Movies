@@ -17,9 +17,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.google.gson.JsonObject;
 
 import org.jetbrains.annotations.NotNull;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import ru.naemys.movies.App;
 import ru.naemys.movies.R;
 import ru.naemys.movies.models.Movie;
 
@@ -28,6 +33,8 @@ public class DescriptionMovieFragment extends Fragment {
 
     private EditText mReviewMovieEditText;
     private CheckBox mLikeMovieCheckBox;
+
+    private TextView mDescriptionMovieTextView;
 
     private Movie mMovie;
 
@@ -59,8 +66,8 @@ public class DescriptionMovieFragment extends Fragment {
 
             ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(mMovie.getTitle());
 
-            ((TextView) view.findViewById(R.id.descriptionMovieTextView))
-                    .setText(mMovie.getDescription());
+            mDescriptionMovieTextView = view.findViewById(R.id.descriptionMovieTextView);
+            loadDescription();
 
             ImageView posterMovieImageView = view.findViewById(R.id.posterMovieImageView);
 
@@ -111,5 +118,28 @@ public class DescriptionMovieFragment extends Fragment {
 
     private void setMovie(Movie movie) {
         mMovie = movie;
+    }
+
+    private void loadDescription() {
+        if (mMovie.getId() == null) {
+            mDescriptionMovieTextView.setText(mMovie.getDescription());
+            return;
+        }
+        App.getInstance().getMovieService().getMovie(mMovie.getId()).enqueue(new Callback<JsonObject>() {
+            @Override
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+                if (response.isSuccessful()) {
+                    JsonObject jsonObject = response.body();
+                    String description = jsonObject.get("data").getAsJsonObject()
+                            .get("description").getAsString();
+                    mDescriptionMovieTextView.setText(description);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+            }
+        });
     }
 }

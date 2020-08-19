@@ -18,6 +18,8 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private static final int VIEW_TYPE_MOVIE = 1;
     private static final int VIEW_TYPE_FOOTER = 2;
 
+    private boolean favorite = false;
+
     private List<Movie> movies = new ArrayList<>();
 
     private OnDescriptionButtonClickListener onDescriptionButtonClickListener;
@@ -44,10 +46,14 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         this.movies = movies;
     }
 
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == VIEW_TYPE_FOOTER) {
+        if (viewType == VIEW_TYPE_FOOTER && !favorite) {
             return new SimpleViewHolder(LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_movie_footer, parent, false));
         } else {
@@ -68,7 +74,7 @@ public class MovieAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return movies.size() + 1;
+        return movies.size() + (favorite ? 0 : 1);
     }
 
     @Override

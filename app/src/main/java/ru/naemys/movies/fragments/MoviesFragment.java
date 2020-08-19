@@ -102,20 +102,21 @@ public class MoviesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mMovieRecyclerView = view.findViewById(R.id.moviesRecyclerView);
         attachMovieAdapter();
+        if (!isShowFavorite()) {
+            mMovieRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+                @Override
+                public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                    LinearLayoutManager layoutManager =
+                            (LinearLayoutManager) recyclerView.getLayoutManager();
+                    if (layoutManager == null) return;
 
-        mMovieRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                LinearLayoutManager layoutManager =
-                        (LinearLayoutManager) recyclerView.getLayoutManager();
-                if (layoutManager == null) return;
-
-                if (layoutManager.findLastCompletelyVisibleItemPosition() == mMovies.size()) {
-                    mPage++;
-                    loadMovies();
+                    if (layoutManager.findLastCompletelyVisibleItemPosition() == mMovies.size()) {
+                        mPage++;
+                        loadMovies();
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     @Override
@@ -129,6 +130,7 @@ public class MoviesFragment extends Fragment {
     private void createMovieAdapter() {
         mMovieAdapter = new MovieAdapter();
         mMovieAdapter.setMovies(mMovies);
+        mMovieAdapter.setFavorite(isShowFavorite());
         mMovieAdapter.setOnDescriptionButtonClickListener(
                 new MovieAdapter.OnDescriptionButtonClickListener() {
                     @Override
@@ -254,7 +256,6 @@ public class MoviesFragment extends Fragment {
                 } else {
                     Log.d(TAG_MOVIES, "response.code: " + response.code());
                 }
-
             }
 
             @Override
