@@ -2,30 +2,39 @@ package ru.naemys.movies.models;
 
 import androidx.annotation.Nullable;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Objects;
 
 public class Movie {
+    private String id;
     private String title;
     private String description;
-    private int posterResource;
+    private String posterUrl;
     private boolean favorite = false;
 
     public Movie() {
     }
 
-    public Movie(String title, String description, int posterResource) {
+    public Movie(String id, String title, String description, String posterUrl) {
+        this.id = id;
         this.title = title;
         this.description = description;
-        this.posterResource = posterResource;
+        this.posterUrl = posterUrl;
     }
 
-    public Movie(String title, String description, int posterResource, boolean favorite) {
+    public Movie(String id, String title, String description, String posterUrl, boolean favorite) {
+        this.id = id;
         this.title = title;
         this.description = description;
-        this.posterResource = posterResource;
+        this.posterUrl = posterUrl;
         this.favorite = favorite;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTitle() {
@@ -44,12 +53,12 @@ public class Movie {
         this.description = description;
     }
 
-    public int getPosterResource() {
-        return posterResource;
+    public String getPosterUrl() {
+        return posterUrl;
     }
 
-    public void setPosterResource(int posterResource) {
-        this.posterResource = posterResource;
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
     }
 
     public boolean isFavorite() {
@@ -67,18 +76,19 @@ public class Movie {
 
         Movie movie = (Movie) obj;
 
-        return movie.getPosterResource() == posterResource
+        return Objects.equals(movie.getPosterUrl(), posterUrl)
                 && Objects.equals(movie.getTitle(), title)
                 && Objects.equals(movie.getDescription(), description);
     }
 
     @Override
-    @NotNull
     public String toString() {
         return "Movie{" +
-                "title='" + title + '\'' +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
-                ", posterResource=" + posterResource +
+                ", posterUrl='" + posterUrl + '\'' +
+                ", favorite=" + favorite +
                 '}';
     }
 }

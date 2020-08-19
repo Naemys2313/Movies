@@ -45,7 +45,6 @@ public class AddMovieFragment extends Fragment {
                         .getText().toString().trim());
                 movie.setDescription(((EditText) view.findViewById(R.id.descriptionMovieEditText))
                         .getText().toString().trim());
-                movie.setPosterResource(R.drawable.ic_baseline_movie_24);
 
                 Log.d(TAG, "Movie: " + movie.toString());
 

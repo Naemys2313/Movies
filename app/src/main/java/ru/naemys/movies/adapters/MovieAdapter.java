@@ -36,9 +36,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieViewHolder> {
         this.onFavoriteMovieClickListener = onFavoriteMovieClickListener;
     }
 
-    public void addMovies(List<Movie> movies) {
-        this.movies.addAll(movies);
-        notifyDataSetChanged();
+    public void setMovies(List<Movie> movies) {
+        this.movies = movies;
     }
 
     @NonNull

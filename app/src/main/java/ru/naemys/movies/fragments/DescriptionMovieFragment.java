@@ -16,6 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+
 import org.jetbrains.annotations.NotNull;
 
 import ru.naemys.movies.R;
@@ -59,15 +61,21 @@ public class DescriptionMovieFragment extends Fragment {
 
             ((TextView) view.findViewById(R.id.descriptionMovieTextView))
                     .setText(mMovie.getDescription());
-            ((ImageView) view.findViewById(R.id.posterMovieImageView))
-                    .setImageResource(mMovie.getPosterResource());
+
+            ImageView posterMovieImageView = view.findViewById(R.id.posterMovieImageView);
+
+            if (mMovie.getPosterUrl() == null) posterMovieImageView
+                    .setImageResource(R.drawable.ic_baseline_movie_24);
+            else
+                Glide.with(getContext())
+                        .load(mMovie.getPosterUrl())
+                        .into(posterMovieImageView);
         }
 
         mReviewMovieEditText = view.findViewById(R.id.reviewMovieEditText);
         mLikeMovieCheckBox = view.findViewById(R.id.likeMovieCheckBox);
 
         mLikeMovieCheckBox.setChecked(mMovie.isFavorite());
-
     }
 
     @Override

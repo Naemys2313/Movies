@@ -8,6 +8,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import ru.naemys.movies.R;
 import ru.naemys.movies.adapters.MovieAdapter;
 import ru.naemys.movies.models.Movie;
@@ -28,7 +30,14 @@ public class MovieViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(@NonNull Movie movie) {
-        posterMovieImageView.setImageResource(movie.getPosterResource());
+        if (movie.getPosterUrl() == null)
+            posterMovieImageView.setImageResource(R.drawable.ic_baseline_movie_24);
+        else {
+            Glide.with(itemView.getContext())
+                    .load(movie.getPosterUrl())
+                    .into(posterMovieImageView);
+        }
+
         titleMovieTextView.setText(movie.getTitle());
 
         if (movie.isFavorite()) {

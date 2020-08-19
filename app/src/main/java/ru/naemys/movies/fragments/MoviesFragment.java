@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,15 +22,18 @@ import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import ru.naemys.movies.App;
 import ru.naemys.movies.MainActivity;
-import ru.naemys.movies.MoviesRepository;
 import ru.naemys.movies.R;
 import ru.naemys.movies.adapters.MovieAdapter;
 import ru.naemys.movies.models.Movie;
+import ru.naemys.movies.models.MoviesJson;
 
 public class MoviesFragment extends Fragment {
     public static final String TAG_MOVIES = MoviesFragment.class.getSimpleName();
@@ -40,10 +44,15 @@ public class MoviesFragment extends Fragment {
     private List<Movie> mMovies = new ArrayList<>();
 
     private RecyclerView mMovieRecyclerView;
+    private MovieAdapter mMovieAdapter;
+
+    private FrameLayout mMovieLoader;
 
     private OnDescriptionButtonClickListener mOnDescriptionButtonClickListener;
 
     private SharedPreferences mSharedPreferences;
+
+    private int mPage = 1;
 
     public interface OnDescriptionButtonClickListener {
         void onDescriptionButtonClick(Movie movie);
@@ -70,10 +79,12 @@ public class MoviesFragment extends Fragment {
         mSharedPreferences = getActivity().getSharedPreferences(
                 MainActivity.SHARED_PREFERENCES_MOVIES, Context.MODE_PRIVATE);
 
+        createMovieAdapter();
+
         if (isShowFavorite())
             mMovies.addAll(getFavoriteMoviesFromSharedPreferences());
         else
-            mMovies.addAll(MoviesRepository.getMovies());
+            loadMovies();
 
         if (isShowFavorite())
             ((AppCompatActivity) getActivity()).getSupportActionBar()
@@ -93,11 +104,23 @@ public class MoviesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mMovieRecyclerView = view.findViewById(R.id.moviesRecyclerView);
         attachMovieAdapter();
+
         Log.d(MoviesFragment.class.getSimpleName(), "onViewCreated: here");
         loadFavoriteMovies();
-        final MovieAdapter movieAdapter = (MovieAdapter) mMovieRecyclerView.getAdapter();
+    }
 
-        movieAdapter.setOnDescriptionButtonClickListener(
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        if (isShowFavorite())
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.app_name);
+    }
+
+    private void createMovieAdapter() {
+        mMovieAdapter = new MovieAdapter();
+        mMovieAdapter.setMovies(mMovies);
+        mMovieAdapter.setOnDescriptionButtonClickListener(
                 new MovieAdapter.OnDescriptionButtonClickListener() {
                     @Override
                     public void onDescriptionButtonClick(int position) {
@@ -106,7 +129,7 @@ public class MoviesFragment extends Fragment {
                     }
                 });
 
-        movieAdapter.setOnFavoriteMovieClickListener(
+        mMovieAdapter.setOnFavoriteMovieClickListener(
                 new MovieAdapter.OnFavoriteMovieClickListener() {
                     @Override
                     public void onFavoriteMovieClick(int position) {
@@ -119,24 +142,13 @@ public class MoviesFragment extends Fragment {
                             removeFavoriteMovie(movie);
                         }
 
-                        movieAdapter.notifyItemChanged(position);
+                        mMovieAdapter.notifyItemChanged(position);
                     }
                 });
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-        if (isShowFavorite())
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(R.string.app_name);
-    }
-
     private void attachMovieAdapter() {
-        MovieAdapter movieAdapter = new MovieAdapter();
-        movieAdapter.addMovies(mMovies);
-
-        mMovieRecyclerView.setAdapter(movieAdapter);
+        mMovieRecyclerView.setAdapter(mMovieAdapter);
         mMovieRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mMovieRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
                 DividerItemDecoration.VERTICAL));
@@ -208,8 +220,8 @@ public class MoviesFragment extends Fragment {
     }
 
     public void addMovie(Movie movie) {
-        mMovies.add(movie);
-        mMovieRecyclerView.getAdapter().notifyItemInserted(mMovies.size() - 1);
+        mMovies.add(0, movie);
+        mMovieRecyclerView.getAdapter().notifyItemInserted(0);
     }
 
     private boolean isShowFavorite() {
@@ -217,4 +229,31 @@ public class MoviesFragment extends Fragment {
                 && getArguments().containsKey(EXTRA_SHOW_FAVORITE)
                 && getArguments().getBoolean(EXTRA_SHOW_FAVORITE, false);
     }
+
+    private void loadMovies() {
+        App.getInstance().getMovieService().getMovies(mPage).enqueue(new Callback<MoviesJson>() {
+            @Override
+            public void onResponse(Call<MoviesJson> call, Response<MoviesJson> response) {
+
+                if (response.isSuccessful()) {
+                    MoviesJson moviesJson = response.body();
+                    for (MoviesJson.MovieJson movieJson : moviesJson.movieJsonList) {
+                        mMovies.add(new Movie(movieJson.id, movieJson.title, "Some Description", movieJson.posterUrl));
+                    }
+                    mMovieAdapter.notifyDataSetChanged();
+
+                } else {
+                    Log.d(TAG_MOVIES, "response.code: " + response.code());
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<MoviesJson> call, Throwable t) {
+                t.printStackTrace();
+            }
+        });
+    }
+
+
 }

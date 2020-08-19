@@ -13,16 +13,18 @@
         android:scaleType="fitCenter"
         android:src="@drawable/ic_baseline_movie_24"
         android:transitionName="MyTransaction"
+        app:layout_constraintEnd_toStartOf="@+id/titleMovieTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/titleMovieTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:textColor="@android:color/black"
-        android:textSize="20sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@id/descriptionMovieButton"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,8 +50,7 @@
         android:layout_height="wrap_content"
         android:text="@string/description_button"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/posterMovieImageView"
+        app:layout_constraintStart_toStartOf="@id/titleMovieTextView"
         app:layout_constraintTop_toBottomOf="@id/titleMovieTextView" />
 
 
