@@ -97,14 +97,13 @@ public class DescriptionMovieFragment extends Fragment {
                 .findFragmentByTag(MoviesFragment.TAG_MOVIES));
 
         if (likeMovie != mMovie.isFavorite()) {
+            mMovie.setFavorite(likeMovie);
             if (likeMovie) {
                 fragment.saveFavoriteMovie(mMovie);
             } else {
                 fragment.removeFavoriteMovie(mMovie);
             }
         }
-
-        mMovie.setFavorite(likeMovie);
 
         fragment.setContentChange();
 
